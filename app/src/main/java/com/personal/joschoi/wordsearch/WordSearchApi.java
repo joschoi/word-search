@@ -1,8 +1,15 @@
 package com.personal.joschoi.wordsearch;
 
-/**
- * Created by joschoi on 2/13/17.
- */
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Streaming;
+import rx.Observable;
 
-public class WordSearchApi {
+public interface WordSearchApi {
+
+	@Streaming
+	@GET("duolingo-data/s3/js2/find_challenges.txt#")
+	Observable<ResponseBody> getWordSearchTextFile();
+//	Call<String> getWordSearchTxtFile();
 }
