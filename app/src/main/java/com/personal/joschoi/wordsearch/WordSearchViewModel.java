@@ -8,13 +8,14 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.GridView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.ResponseBody;
 import rx.Observer;
 
@@ -24,6 +25,8 @@ public class WordSearchViewModel {
 
 	@Bind(R.id.word_search_grid) RecyclerView wordGrid;
 	@Bind(R.id.test_word) TextView testWord;
+	@Bind(R.id.lang) TextView lang;
+	@Bind(R.id.next_word) Button nextWordBtn;
 
 	public int wordIndex;
 	public Context context;
@@ -35,10 +38,6 @@ public class WordSearchViewModel {
 
 	public void bind(View view) {
 		ButterKnife.bind(this, view);
-		GridLayoutManager layoutManager = new GridLayoutManager(context, 8);
-
-		wordGrid.setLayoutManager(layoutManager);
-		wordGrid.setHasFixedSize(true);
 	}
 
 	private WordSearchInfo getCurrentWordInfo() {
@@ -46,22 +45,20 @@ public class WordSearchViewModel {
 	}
 
 	public void setUpWordGrid() {
-
+		GridLayoutManager layoutManager = new GridLayoutManager(context, getCurrentWordInfo().getCharacter_grid().size());
+		wordGrid.setLayoutManager(layoutManager);
+		wordGrid.setHasFixedSize(true);
 		wordGrid.setAdapter(new WordGridAdapter(context, getCurrentWordInfo().getCharacter_grid()));
-
-		// PLUG IN DATA
-		WordSearchInfo word = getCurrentWordInfo();
-		ArrayList<ArrayList<String>> charGrid = word.getCharacter_grid();
-
-		for (ArrayList<String> column : charGrid) {
-			for (String letter : column) {
-
-			}
-		}
 	}
 
-	public void setTestWord() {
-		testWord.setText(getCurrentWordInfo().getWord());
+	public void setTestWordInfo() {
+		testWord.setText(context.getString(R.string.word, getCurrentWordInfo().getWord()));
+		lang.setText(context.getString(R.string.lang, getCurrentWordInfo().getTarget_language()));
+	}
+
+	@OnClick(R.id.next_word)
+	public void onClickNextWordBtn(View view) {
+		view.getContext().startActivity(WordSearchActivity.createIntent(context, ++wordIndex));
 	}
 
 
@@ -83,7 +80,7 @@ public class WordSearchViewModel {
 				BufferedReader reader = new BufferedReader(responseBody.charStream());
 				wordsFromTxtFile = extractWordSearchInfo(reader);
 				setUpWordGrid();
-				setTestWord();
+				setTestWordInfo();
 			}
 		};
 	}

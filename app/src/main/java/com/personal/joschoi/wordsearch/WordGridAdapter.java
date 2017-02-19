@@ -21,11 +21,16 @@ public class WordGridAdapter extends RecyclerView.Adapter<WordGridAdapter.WordGr
 	Context context;
 	ArrayList<ArrayList<String>> charGrid;
 
-	public int colNumber = 0;
+	public int colIndex = 0;
+	public int rowIndex = 0;
+	public int numRow;
+	public int numCol;
 
 	public WordGridAdapter(Context context, ArrayList<ArrayList<String>> charGrid) {
 		this.context = context;
 		this.charGrid = charGrid;
+		this.numRow = charGrid.size();
+		this.numCol = charGrid.get(0).size();
 	}
 
 	@Override
@@ -36,13 +41,20 @@ public class WordGridAdapter extends RecyclerView.Adapter<WordGridAdapter.WordGr
 
 	@Override
 	public void onBindViewHolder(WordGridViewHolder holder, int position) {
-		if (position!=0 && ((position % 8)==0)) colNumber++;
-		holder.setLetter(charGrid.get(colNumber).get(position%8));
+		if (position != 0 && position % numCol != 0) {
+			colIndex++;
+		}
+		if (position != 0 && position % numRow == 0 ){
+			colIndex = 0;
+			rowIndex++;
+		}
+
+		holder.setLetter(charGrid.get(colIndex).get(rowIndex));
 	}
 
 	@Override
 	public int getItemCount() {
-		return 64;
+		return numRow*numCol;
 	}
 
 	class WordGridViewHolder extends RecyclerView.ViewHolder {
