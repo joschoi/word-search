@@ -1,9 +1,7 @@
 package com.personal.joschoi.wordsearch;
 
-import java.util.List;
-
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
