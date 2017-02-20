@@ -2,7 +2,6 @@ package com.personal.joschoi.wordsearch;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.View;
 
 /**
  * Created by joschoi on 2/19/17.

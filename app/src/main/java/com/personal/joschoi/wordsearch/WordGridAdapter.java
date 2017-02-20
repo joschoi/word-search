@@ -1,10 +1,8 @@
 package com.personal.joschoi.wordsearch;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +13,7 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class WordGridAdapter extends RecyclerView.Adapter<WordGridAdapter.WordGridViewHolder> implements ItemTouchHelperAdapter {
+public class WordGridAdapter extends RecyclerView.Adapter<WordGridAdapter.WordGridViewHolder> {
 
 	Context context;
 	ArrayList<ArrayList<String>> charGrid;
@@ -27,14 +25,16 @@ public class WordGridAdapter extends RecyclerView.Adapter<WordGridAdapter.WordGr
 
 	public int start;
 	public int end;
+	public int wordIndex;
 
-	public WordGridAdapter(Context context, ArrayList<ArrayList<String>> charGrid, int start, int end) {
+	public WordGridAdapter(Context context, ArrayList<ArrayList<String>> charGrid, int start, int end, int wordIndex) {
 		this.context = context;
 		this.charGrid = charGrid;
 		this.numRow = charGrid.size();
 		this.numCol = charGrid.get(0).size();
 		this.start = start;
 		this.end = end;
+		this.wordIndex = wordIndex;
 	}
 
 	@Override
@@ -61,18 +61,11 @@ public class WordGridAdapter extends RecyclerView.Adapter<WordGridAdapter.WordGr
 		return numRow*numCol;
 	}
 
-	@Override
 	public void onItemMove(int fromPosition, int toPosition) {
 		if (fromPosition == start && toPosition == end) {
-			Toast.makeText(context, "CORRECT", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, context.getString(R.string.correct), Toast.LENGTH_SHORT).show();
+			return;
 		}
-		else if (fromPosition == end && toPosition == start) {
-			Toast.makeText(context, "CORRECT", Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	@Override
-	public void onItemDismiss(int position) {
 	}
 
 	class WordGridViewHolder extends RecyclerView.ViewHolder {

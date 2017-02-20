@@ -29,9 +29,14 @@ public class WordSearchViewModel {
 	@Bind(R.id.test_word) TextView testWord;
 	@Bind(R.id.lang) TextView lang;
 	@Bind(R.id.next_word) Button nextWordBtn;
+	@Bind(R.id.directions) TextView directions;
 
 	public int wordIndex;
 	public Context context;
+
+	private WordSearchInfo getCurrentWordInfo() {
+		return wordsFromTxtFile.get(wordIndex);
+	}
 
 	public WordSearchViewModel(Context context, int wordIndex) {
 		this.context = context;
@@ -42,30 +47,76 @@ public class WordSearchViewModel {
 		ButterKnife.bind(this, view);
 	}
 
-	private WordSearchInfo getCurrentWordInfo() {
-		return wordsFromTxtFile.get(wordIndex);
+	@OnClick(R.id.next_word)
+	public void onClickNextWordBtn(View view) {
+		view.getContext().startActivity(WordSearchActivity.createIntent(context, ++wordIndex));
 	}
 
-	public void setUpWordGrid() {
-//		GridLayoutManager layoutManager = new GridLayoutManager(context, getCurrentWordInfo().getCharacter_grid().size());
-		WordGridLayoutManager layoutManager = new WordGridLayoutManager(context,
-			getCurrentWordInfo().getCharacter_grid().size(),
-			getStartLocation(),
-			getEndLocation());
+	public Observer<ResponseBody> getWordsFromTxtFileObserver() {
+		return new Observer<ResponseBody>() {
+			@Override
+			public void onCompleted() {
+			}
+
+			@Override
+			public void onError(Throwable e) {
+			}
+
+			@Override
+			public void onNext(ResponseBody responseBody) {
+				BufferedReader reader = new BufferedReader(responseBody.charStream());
+				wordsFromTxtFile = extractWordSearchInfo(reader);
+				setUpWordGrid();
+				setTestWordInfo();
+			}
+		};
+	}
+
+	private void setUpWordGrid() {
+		GridLayoutManager layoutManager = new GridLayoutManager(context, getCurrentWordInfo().getCharacter_grid().size());
 
 		WordGridAdapter adapter = new WordGridAdapter(context,
 			getCurrentWordInfo().getCharacter_grid(),
 			getStartLocation(),
-			getEndLocation());
+			getEndLocation(),
+			wordIndex);
 
 		wordGrid.setLayoutManager(layoutManager);
 		wordGrid.setHasFixedSize(true);
 		wordGrid.setAdapter(adapter);
 
-		ItemTouchHelper.Callback callback =
-			new SimpleItemTouchHelperCallback(adapter);
+		ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
 		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
 		touchHelper.attachToRecyclerView(wordGrid);
+	}
+
+	private ArrayList<WordSearchInfo> extractWordSearchInfo(BufferedReader reader) {
+		ArrayList<WordSearchInfo> listToReturn = new ArrayList<WordSearchInfo>();
+		Gson gson = new Gson();
+
+		try {
+			String str = reader.readLine();
+
+			while (str != null) {
+				WordSearchInfo info = gson.fromJson(str, WordSearchInfo.class);
+				listToReturn.add(info);
+				str = reader.readLine();
+			}
+
+			reader.close();
+
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return listToReturn;
+	}
+
+	private void setTestWordInfo() {
+		testWord.setText(context.getString(R.string.word, getCurrentWordInfo().getWord()));
+		lang.setText(context.getString(R.string.lang, getCurrentWordInfo().getTarget_language()));
+		directions.setText(context.getString(R.string.directions));
 	}
 
 	private int getStartLocation() {
@@ -92,63 +143,5 @@ public class WordSearchViewModel {
 			y = Integer.parseInt(String.valueOf(key.charAt(key.length()-3)));
 		}
 		return x*numCol + y;
-	}
-
-	public void setTestWordInfo() {
-		testWord.setText(context.getString(R.string.word, getCurrentWordInfo().getWord()));
-		lang.setText(context.getString(R.string.lang, getCurrentWordInfo().getTarget_language()));
-	}
-
-	@OnClick(R.id.next_word)
-	public void onClickNextWordBtn(View view) {
-		view.getContext().startActivity(WordSearchActivity.createIntent(context, ++wordIndex));
-	}
-
-
-	//////////////////////
-	// DATA-ORIENTED LOGIC
-
-	public Observer<ResponseBody> getWordsFromTxtFileObserver() {
-		return new Observer<ResponseBody>() {
-			@Override
-			public void onCompleted() {
-			}
-
-			@Override
-			public void onError(Throwable e) {
-			}
-
-			@Override
-			public void onNext(ResponseBody responseBody) {
-				BufferedReader reader = new BufferedReader(responseBody.charStream());
-				wordsFromTxtFile = extractWordSearchInfo(reader);
-				setUpWordGrid();
-				setTestWordInfo();
-			}
-		};
-	}
-
-	// TODO: UNIT TEST
-	public ArrayList<WordSearchInfo> extractWordSearchInfo(BufferedReader reader) {
-		ArrayList<WordSearchInfo> listToReturn = new ArrayList<WordSearchInfo>();
-		Gson gson = new Gson();
-
-		try {
-			String str = reader.readLine();
-
-			while (str != null) {
-				WordSearchInfo info = gson.fromJson(str, WordSearchInfo.class);
-				listToReturn.add(info);
-				str = reader.readLine();
-			}
-
-			reader.close();
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return listToReturn;
 	}
 }

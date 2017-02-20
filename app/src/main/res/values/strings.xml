@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Word Search</string>
 
+    <string name="directions">Directions: Drag and drop the start letter to the end letter. If successful, it will show a toast message.</string>
     <string name="word">word: %s</string>
     <string name="lang">lang: %s</string>
+    <string name="correct">correct</string>
 </resources>

@@ -7,45 +7,64 @@
     tools:context="com.personal.joschoi.wordsearch.WordSearchActivity"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="30dp"
-        android:id="@+id/word_search_grid"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/lang"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:textSize="20sp"
-            android:textColor="@color/lightBlue"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/test_word"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:textSize="20sp"
-            android:textColor="@color/green"/>
+            <TextView
+                android:id="@+id/directions"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-    </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:layout_marginTop="30dp"
+                android:id="@+id/word_search_grid"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
 
-    <Button
-        android:layout_marginTop="10dp"
-        android:text="Next Word"
-        android:id="@+id/next_word"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/lang"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:textSize="20sp"
+                    android:textColor="@color/lightBlue"/>
+
+                <TextView
+                    android:id="@+id/test_word"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:textSize="20sp"
+                    android:textColor="@color/green"/>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_marginTop="10dp"
+                android:text="Next Word"
+                android:id="@+id/next_word"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
