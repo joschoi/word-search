@@ -3,10 +3,12 @@ package com.personal.joschoi.wordsearch;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -45,10 +47,51 @@ public class WordSearchViewModel {
 	}
 
 	public void setUpWordGrid() {
-		GridLayoutManager layoutManager = new GridLayoutManager(context, getCurrentWordInfo().getCharacter_grid().size());
+//		GridLayoutManager layoutManager = new GridLayoutManager(context, getCurrentWordInfo().getCharacter_grid().size());
+		WordGridLayoutManager layoutManager = new WordGridLayoutManager(context,
+			getCurrentWordInfo().getCharacter_grid().size(),
+			getStartLocation(),
+			getEndLocation());
+
+		WordGridAdapter adapter = new WordGridAdapter(context,
+			getCurrentWordInfo().getCharacter_grid(),
+			getStartLocation(),
+			getEndLocation());
+
 		wordGrid.setLayoutManager(layoutManager);
 		wordGrid.setHasFixedSize(true);
-		wordGrid.setAdapter(new WordGridAdapter(context, getCurrentWordInfo().getCharacter_grid()));
+		wordGrid.setAdapter(adapter);
+
+		ItemTouchHelper.Callback callback =
+			new SimpleItemTouchHelperCallback(adapter);
+		ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+		touchHelper.attachToRecyclerView(wordGrid);
+	}
+
+	private int getStartLocation() {
+		Map<String, String> map = getCurrentWordInfo().getWord_locations();
+		int x = 0;
+		int y = 0;
+		int numRow = getCurrentWordInfo().getCharacter_grid().size();
+		int numCol = getCurrentWordInfo().getCharacter_grid().get(0).size();
+		for ( String key : map.keySet() ) {
+			x = Integer.parseInt(String.valueOf(key.charAt(0)));
+			y = Integer.parseInt(String.valueOf(key.charAt(2)));
+		}
+		return x*numCol + y;
+	}
+
+	private int getEndLocation() {
+		Map<String, String> map = getCurrentWordInfo().getWord_locations();
+		int x = 0;
+		int y = 0;
+		int numRow = getCurrentWordInfo().getCharacter_grid().size();
+		int numCol = getCurrentWordInfo().getCharacter_grid().get(0).size();
+		for ( String key : map.keySet() ) {
+			x = Integer.parseInt(String.valueOf(key.charAt(key.length()-1)));
+			y = Integer.parseInt(String.valueOf(key.charAt(key.length()-3)));
+		}
+		return x*numCol + y;
 	}
 
 	public void setTestWordInfo() {

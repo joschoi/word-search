@@ -1,22 +1,21 @@
 package com.personal.joschoi.wordsearch;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-/**
- * Instead of setting a cell try to set a entire row
- */
-
-public class WordGridAdapter extends RecyclerView.Adapter<WordGridAdapter.WordGridViewHolder> {
+public class WordGridAdapter extends RecyclerView.Adapter<WordGridAdapter.WordGridViewHolder> implements ItemTouchHelperAdapter {
 
 	Context context;
 	ArrayList<ArrayList<String>> charGrid;
@@ -26,11 +25,16 @@ public class WordGridAdapter extends RecyclerView.Adapter<WordGridAdapter.WordGr
 	public int numRow;
 	public int numCol;
 
-	public WordGridAdapter(Context context, ArrayList<ArrayList<String>> charGrid) {
+	public int start;
+	public int end;
+
+	public WordGridAdapter(Context context, ArrayList<ArrayList<String>> charGrid, int start, int end) {
 		this.context = context;
 		this.charGrid = charGrid;
 		this.numRow = charGrid.size();
 		this.numCol = charGrid.get(0).size();
+		this.start = start;
+		this.end = end;
 	}
 
 	@Override
@@ -55,6 +59,20 @@ public class WordGridAdapter extends RecyclerView.Adapter<WordGridAdapter.WordGr
 	@Override
 	public int getItemCount() {
 		return numRow*numCol;
+	}
+
+	@Override
+	public void onItemMove(int fromPosition, int toPosition) {
+		if (fromPosition == start && toPosition == end) {
+			Toast.makeText(context, "CORRECT", Toast.LENGTH_SHORT).show();
+		}
+		else if (fromPosition == end && toPosition == start) {
+			Toast.makeText(context, "CORRECT", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	@Override
+	public void onItemDismiss(int position) {
 	}
 
 	class WordGridViewHolder extends RecyclerView.ViewHolder {
